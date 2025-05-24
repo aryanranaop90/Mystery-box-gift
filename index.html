@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mystery Box</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow: 0 0 15px #f0f, 0 0 25px #0ff;
+      margin-bottom: 10px;
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+      margin-bottom: 30px;
+      animation: glow 2s infinite alternate;
+    }
+
+    form input, form button {
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    form button {
+      background: #ff00cc;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 0 10px #ff00cc;
+    }
+
+    #box-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .box {
+      width: 100px;
+      height: 100px;
+      background-image: url('https://i.ibb.co/6c79PN9T/red-gift-box-ribbon-isolated-260nw-2540471741.jpg');
+      background-size: cover;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+      animation: glowBox 1.5s infinite alternate;
+      cursor: pointer;
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .box:hover {
+      transform: scale(1.1);
+    }
+
+    .box::after {
+      content: 'Click';
+      position: absolute;
+      bottom: 5px;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8em;
+      color: #fff;
+      text-shadow: 0 0 5px black;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #ff00ff; }
+      to { box-shadow: 0 0 30px #00ffff; }
+    }
+
+    @keyframes glowBox {
+      0% { box-shadow: 0 0 10px red; }
+      100% { box-shadow: 0 0 30px orange; }
+    }
+
+    .prize {
+      text-align: center;
+      margin-top: 30px;
+      animation: glow 2s infinite alternate;
+    }
+
+    .prize img {
+      max-width: 200px;
+      border-radius: 10px;
+      animation: pop 0.5s ease-out;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+
+    .share-btn {
+      background: #25D366;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #25D366;
+    }
+
+    .confetti {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mystery Box</h1>
+
+  <div id="box-container"></div>
+
+  <div class="prize" id="prize"></div>
+
+  <form id="userForm">
+    <input type="text" id="name" placeholder="Enter your name" required />
+    <input type="tel" id="number" placeholder="Enter your phone number" required />
+    <button type="submit">Claim Prize</button>
+  </form>
+
+  <canvas class="confetti" id="confetti"></canvas>
+
+  <script>
+    const prizes = [
+      { name: "Trip Steamer", img: "https://i.ibb.co/KcZMbGyc/uchit-mini-portable-ironing-machine-handheld-steam-iron-travel-garment-steamer-professional-micro-st.jpg" },
+      { name: "Gaming PC", img: "https://i.ibb.co/xqmKMpkd/51-Dh-Q3-Ox2z-L-AC-UF1000-1000-QL80.jpg" },
+      { name: "Rolex Watch", img: "https://i.ibb.co/WvN9KpmP/m124300-0005-drp-upright-bba-with-shadow.webp" },
+      { name: "Gucci Handbag", img: "https://i.ibb.co/9kN1jFxm/61fp-VWg-Ou-DL-AC-UF1000-1000-QL80.jpg" },
+      { name: "Samsung Z Fold", img: "https://i.ibb.co/V0SyXpqL/6512775078a2445f176ffd44-samsung-galaxy-z-fold-4-5g-f936u-256gb.jpg" },
+      { name: "Tesla Car", img: "https://i.ibb.co/cdJm3tg/2017-tesla-roadster-deck-model-petersen-automotive-museum.jpg" },
+      { name: "Gold Bar", img: "https://i.ibb.co/NnxK6LDV/gold-bar.png" },
+      { name: "Mac Mini", img: "https://i.ibb.co/gF6Yhhy3/61e5-Cckxbx-L-AC-UF1000-1000-QL80.jpg" },
+      { name: "Yacht Trip", img: "https://via.placeholder.com/200x200?text=Yacht+Trip" },
+      { name: "First Class Flight", img: "https://via.placeholder.com/200x200?text=Flight+Ticket" }
+    ];
+
+    const form = document.getElementById('userForm');
+    const boxContainer = document.getElementById('box-container');
+    const prizeDiv = document.getElementById('prize');
+    const confettiCanvas = document.getElementById('confetti');
+    const ctx = confettiCanvas.getContext('2d');
+    let currentPrize = null;
+    let shareCount = parseInt(localStorage.getItem('shareCount') || '0');
+
+    function resizeCanvas() {
+      confettiCanvas.width = window.innerWidth;
+      confettiCanvas.height = window.innerHeight;
+    }
+
+    function launchConfetti() {
+      resizeCanvas();
+      for (let i = 0; i < 100; i++) {
+        drawConfetti(Math.random() * confettiCanvas.width, Math.random() * confettiCanvas.height);
+      }
+    }
+
+    function drawConfetti(x, y) {
+      ctx.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+      ctx.fillRect(x, y, 5, 10);
+    }
+
+    function updateShareUI(prizeName, prizeImg) {
+      prizeDiv.innerHTML = `
+        <h2>Congratulations! You won a ${prizeName}!</h2>
+        <img src="${prizeImg}" alt="${prizeName}" />
+        <p>Share this with 10 people to claim your prize!</p>
+        <p><strong>Shared: ${shareCount} / 10</strong></p>
+        <button class="share-btn" onclick="sharePrize()">Share on WhatsApp</button>
+      `;
+    }
+
+    function sharePrize() {
+      shareCount++;
+      localStorage.setItem('shareCount', shareCount);
+      const shareText = `I won a ${currentPrize.name} in a Mystery Box game! Try your luck here!`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+      updateShareUI(currentPrize.name, currentPrize.img);
+    }
+
+    // Setup boxes on page load
+    window.onload = () => {
+      for (let i = 0; i < 10; i++) {
+        const div = document.createElement('div');
+        div.className = 'box';
+        div.onclick = () => openBox(i);
+        boxContainer.appendChild(div);
+      }
+    };
+
+    function openBox(index) {
+      currentPrize = prizes[Math.floor(Math.random() * prizes.length)];
+      launchConfetti();
+      updateShareUI(currentPrize.name, currentPrize.img);
+      boxContainer.style.display = 'none'; // hide boxes
+      form.style.display = 'flex';         // show login form
+      document.querySelector("form button").textContent = "Claim Prize";
+    }
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert("Prize Claimed! Our team will contact you soon.");
+      form.reset();
+      form.style.display = 'none';
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+  </script>
+</body>
+</html>

@@ -138,13 +138,17 @@
 </head>
 <body>
   <h1>Mystery Box</h1>
+
   <div id="box-container"></div>
+
   <div class="prize" id="prize"></div>
+
   <form id="userForm">
     <input type="text" id="name" placeholder="Enter your name" required />
     <input type="tel" id="number" placeholder="Enter your phone number" required />
     <button type="submit">Claim Prize</button>
   </form>
+
   <canvas class="confetti" id="confetti"></canvas>
 
   <script>
@@ -193,24 +197,49 @@
         <p>Share this with 10 people to claim your prize!</p>
         <p><strong>Shared: ${shareCount} / 10</strong></p>
         <button class="share-btn" onclick="sharePrize()">Share on WhatsApp</button>
+        <!-- Ad Script Injected Below -->
+        <div id="ad-container"></div>
       `;
+
+      // Inject your second ad script here
+      const adScript = document.createElement('script');
+      adScript.type = 'text/javascript';
+      adScript.src = '//pl26689103.profitableratecpm.com/fe/e7/e4/fee7e4e02e21ef1eb65bdf19bec01828.js';
+      document.getElementById('ad-container').appendChild(adScript);
     }
 
     function sharePrize() {
       shareCount++;
       localStorage.setItem('shareCount', shareCount);
-      const siteUrl = 'https://your-mystery-box.vercel.app'; // Replace with your actual site URL
+      const siteUrl = 'https://your-mystery-box.vercel.app'; // REPLACE WITH YOUR ACTUAL LINK
       const shareText = `I won a ${currentPrize.name} in a Mystery Box game! Try your luck here: ${siteUrl}`;
       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
       window.open(whatsappUrl, '_blank');
       updateShareUI(currentPrize.name, currentPrize.img);
     }
 
+    // Popunder ad on box click (your first ad)
+    function openPopunderAd() {
+      // Open the popunder ad in a new window behind the current tab
+      const popunder = window.open(
+        'https://pl26689103.profitableratecpm.com/fe/e7/e4/fee7e4e02e21ef1eb65bdf19bec01828.js',
+        'popunder',
+        'width=1,height=1,left=-1000,top=-1000'
+      );
+      if (popunder) {
+        popunder.blur();
+        window.focus();
+      }
+    }
+
     window.onload = () => {
       for (let i = 0; i < 10; i++) {
         const div = document.createElement('div');
         div.className = 'box';
-        div.onclick = () => openBox(i);
+        div.onclick = () => {
+          openBox(i);
+          openPopunderAd(); // Popunder ad triggered here
+        };
         boxContainer.appendChild(div);
       }
     };
@@ -222,11 +251,6 @@
       boxContainer.style.display = 'none';
       form.style.display = 'flex';
       document.querySelector("form button").textContent = "Claim Prize";
-
-      // Load popunder ad script
-      const adScript = document.createElement('script');
-      adScript.src = '//pl26689103.profitableratecpm.com/fe/e7/e4/fee7e4e02e21ef1eb65bdf19bec01828.js';
-      document.body.appendChild(adScript);
     }
 
     form.addEventListener('submit', function(e) {
@@ -238,5 +262,17 @@
 
     window.addEventListener('resize', resizeCanvas);
   </script>
+
+  <!-- Your first ad script in footer -->
+  <script type="text/javascript">
+    atOptions = {
+      'key' : '08e6c52f51ab979f85eec245c4642edb',
+      'format' : 'iframe',
+      'height' : 60,
+      'width' : 468,
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="//www.highperformanceformat.com/08e6c52f51ab979f85eec245c4642edb/invoke.js"></script>
 </body>
 </html>

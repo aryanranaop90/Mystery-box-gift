@@ -138,17 +138,13 @@
 </head>
 <body>
   <h1>Mystery Box</h1>
-
   <div id="box-container"></div>
-
   <div class="prize" id="prize"></div>
-
   <form id="userForm">
     <input type="text" id="name" placeholder="Enter your name" required />
     <input type="tel" id="number" placeholder="Enter your phone number" required />
     <button type="submit">Claim Prize</button>
   </form>
-
   <canvas class="confetti" id="confetti"></canvas>
 
   <script>
@@ -203,12 +199,13 @@
     function sharePrize() {
       shareCount++;
       localStorage.setItem('shareCount', shareCount);
-      const shareText = `I won a ${currentPrize.name} in a Mystery Box game! Try your luck here!`;
-      window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+      const siteUrl = 'https://your-mystery-box.vercel.app'; // Replace with your actual site URL
+      const shareText = `I won a ${currentPrize.name} in a Mystery Box game! Try your luck here: ${siteUrl}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+      window.open(whatsappUrl, '_blank');
       updateShareUI(currentPrize.name, currentPrize.img);
     }
 
-    // Setup boxes on page load
     window.onload = () => {
       for (let i = 0; i < 10; i++) {
         const div = document.createElement('div');
@@ -222,9 +219,14 @@
       currentPrize = prizes[Math.floor(Math.random() * prizes.length)];
       launchConfetti();
       updateShareUI(currentPrize.name, currentPrize.img);
-      boxContainer.style.display = 'none'; // hide boxes
-      form.style.display = 'flex';         // show login form
+      boxContainer.style.display = 'none';
+      form.style.display = 'flex';
       document.querySelector("form button").textContent = "Claim Prize";
+
+      // Load popunder ad script
+      const adScript = document.createElement('script');
+      adScript.src = '//pl26689103.profitableratecpm.com/fe/e7/e4/fee7e4e02e21ef1eb65bdf19bec01828.js';
+      document.body.appendChild(adScript);
     }
 
     form.addEventListener('submit', function(e) {
@@ -238,13 +240,3 @@
   </script>
 </body>
 </html>
-<script type="text/javascript">
-	atOptions = {
-		'key' : '08e6c52f51ab979f85eec245c4642edb',
-		'format' : 'iframe',
-		'height' : 60,
-		'width' : 468,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/08e6c52f51ab979f85eec245c4642edb/invoke.js"></script>

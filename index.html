@@ -218,27 +218,12 @@
       updateShareUI(currentPrize.name, currentPrize.img);
     }
 
-    // Popunder ad on box click (your first ad)
-    function openPopunderAd() {
-      // Open the popunder ad in a new window behind the current tab
-      const popunder = window.open(
-        'https://pl26689103.profitableratecpm.com/fe/e7/e4/fee7e4e02e21ef1eb65bdf19bec01828.js',
-        'popunder',
-        'width=1,height=1,left=-1000,top=-1000'
-      );
-      if (popunder) {
-        popunder.blur();
-        window.focus();
-      }
-    }
-
     window.onload = () => {
       for (let i = 0; i < 10; i++) {
         const div = document.createElement('div');
         div.className = 'box';
         div.onclick = () => {
           openBox(i);
-          openPopunderAd(); // Popunder ad triggered here
         };
         boxContainer.appendChild(div);
       }
@@ -263,7 +248,7 @@
     window.addEventListener('resize', resizeCanvas);
   </script>
 
-  <!-- Your first ad script in footer -->
+  <!-- Your first ad script in footer remains -->
   <script type="text/javascript">
     atOptions = {
       'key' : '08e6c52f51ab979f85eec245c4642edb',
